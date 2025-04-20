@@ -1,16 +1,24 @@
 package com.C_TechProject.Operation;
 
+import com.C_TechProject.Bordereau.Bordereau;
 import com.C_TechProject.Tier.PersonMorale;
 import com.C_TechProject.Tier.PersonPhysique;
 import com.C_TechProject.bank.Bank;
 import com.C_TechProject.bankAccount.BankAccount;
 import com.C_TechProject.legalEntity.LegalEntity;
-
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "_Operation")
+@Getter
+@Setter
+@ToString(exclude = {"bordereau", "personnePhysique", "personneMorale"}) // Prevent circular references
 public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,135 +33,47 @@ public class Operation {
     private String reglement;
     private String montant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     private Bank bank;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "legal_entity_id")
     private LegalEntity legalEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personnePhysique_id")
     private PersonPhysique personnePhysique;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personneMorale_id")
     private PersonMorale personneMorale;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    // Constructeur simple
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bordereau_id")
+    private Bordereau bordereau;
+
     public Operation() {
-        this.creationDate = new Date();
+        // creationDate is now handled by @CreationTimestamp
     }
 
-    // Getters et Setters
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getEtat() {
-        return etat;
-    }
-
-    public void setEtat(String etat) {
-        this.etat = etat;
-    }
-
-    public String getNumcheque() {
-        return numcheque;
-    }
-
-    public void setNumcheque(String numcheque) {
-        this.numcheque = numcheque;
-    }
-
-    public String getReglement() {
-        return reglement;
-    }
-
-    public void setReglement(String reglement) {
-        this.reglement = reglement;
-    }
-
-    public String getMontant() {
-        return montant;
-    }
-
-    public void setMontant(String montant) {
-        this.montant = montant;
-    }
-
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
-    }
-
-    public LegalEntity getLegalEntity() {
-        return legalEntity;
-    }
-
-    public void setLegalEntity(LegalEntity legalEntity) {
-        this.legalEntity = legalEntity;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
-    public PersonPhysique getPersonnePhysique() {
-        return personnePhysique;
-    }
-
-    public void setPersonnePhysique(PersonPhysique personnePhysique) {
-        this.personnePhysique = personnePhysique;
-    }
-
-    public PersonMorale getPersonneMorale() {
-        return personneMorale;
-    }
-
-    public void setPersonneMorale(PersonMorale personneMorale) {
-        this.personneMorale = personneMorale;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    // Business logic methods
+    public boolean isChequeOperation() {
+        return numcheque != null && !numcheque.isEmpty();
     }
 
     @PrePersist
-    protected void onCreate() {
-        if (this.creationDate == null) {
-            this.creationDate = new Date();
+    protected void validate() {
+        if (montant == null || montant.isEmpty()) {
+            throw new IllegalStateException("Operation amount cannot be empty");
         }
     }
 }
