@@ -16,6 +16,8 @@ public class Operation {
    private java.util.Date dateCreation;
    /** @pdOid e55e0b5d-b3b9-4e07-9bda-5f0435cf59c9 */
    private String numCheque;
+   /** @pdOid 0bea811a-9104-4aa0-b1bb-9b284b028538 */
+   private String etat;
    
    /** @pdOid ebee541a-73f6-4e90-b03c-59acdfb1413c */
    public void ajouterOperation() {

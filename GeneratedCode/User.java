@@ -21,9 +21,6 @@ public class User {
    /** @pdOid c29bebd6-f075-4472-b1ef-a75f90e1ab20 */
    private Role role;
    
-   /** @pdRoleInfo migr=no name=Profil assc=association12 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
-   public java.util.Collection<Profil> profil;
-   
    /** @pdOid d13526a5-2e3c-4db3-afb4-efe5ac55fc38 */
    public boolean gererProfilPersonel() {
       // TODO: implement
@@ -40,56 +37,6 @@ public class User {
    public boolean s_authentifier() {
       // TODO: implement
       return false;
-   }
-   
-   
-   /** @pdGenerated default getter */
-   public java.util.Collection<Profil> getProfil() {
-      if (profil == null)
-         profil = new java.util.HashSet<Profil>();
-      return profil;
-   }
-   
-   /** @pdGenerated default iterator getter */
-   public java.util.Iterator getIteratorProfil() {
-      if (profil == null)
-         profil = new java.util.HashSet<Profil>();
-      return profil.iterator();
-   }
-   
-   /** @pdGenerated default setter
-     * @param newProfil */
-   public void setProfil(java.util.Collection<Profil> newProfil) {
-      removeAllProfil();
-      for (java.util.Iterator iter = newProfil.iterator(); iter.hasNext();)
-         addProfil((Profil)iter.next());
-   }
-   
-   /** @pdGenerated default add
-     * @param newProfil */
-   public void addProfil(Profil newProfil) {
-      if (newProfil == null)
-         return;
-      if (this.profil == null)
-         this.profil = new java.util.HashSet<Profil>();
-      if (!this.profil.contains(newProfil))
-         this.profil.add(newProfil);
-   }
-   
-   /** @pdGenerated default remove
-     * @param oldProfil */
-   public void removeProfil(Profil oldProfil) {
-      if (oldProfil == null)
-         return;
-      if (this.profil != null)
-         if (this.profil.contains(oldProfil))
-            this.profil.remove(oldProfil);
-   }
-   
-   /** @pdGenerated default removeAll */
-   public void removeAllProfil() {
-      if (profil != null)
-         profil.clear();
    }
 
 }
