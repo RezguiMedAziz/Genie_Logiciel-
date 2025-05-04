@@ -2,31 +2,26 @@ package com.C_TechProject.Tier;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class PersonFactory {
+
+    private final Map<String, PersonCreator> creators;
+
+    public PersonFactory(Map<String, PersonCreator> creators) {
+        this.creators = creators.entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        entry -> entry.getValue().getType().toLowerCase(),
+                        Map.Entry::getValue
+                ));
+    }
+
     public Person createPerson(PersonRequest request) {
-        if ("morale".equalsIgnoreCase(request.getType())) {
-            return new PersonMorale(
-                    request.getEmail(),
-                    request.getContact(),
-                    request.getRib(),
-                    request.getName(),
-                    request.getCode(),
-                    null  // operations
-            );
-        } else if ("physique".equalsIgnoreCase(request.getType())) {
-            return new PersonPhysique(
-                    request.getEmail(),
-                    request.getContact(),
-                    request.getRib(),
-                    request.getFirstName(),
-                    request.getLastName(),
-                    request.getCin(),
-                    request.getAdresse(),
-                    null  // operations
-            );
-        } else {
-            throw new IllegalArgumentException("Type de personne inconnu: " + request.getType());
+        PersonCreator creator = creators.get(request.getType().toLowerCase());
+        if (creator == null) {
+            throw new IllegalArgumentException("Unknown type: " + request.getType());
         }
+        return creator.create(request);
     }
 }

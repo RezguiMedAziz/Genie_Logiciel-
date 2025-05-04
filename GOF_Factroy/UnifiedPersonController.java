@@ -23,14 +23,11 @@ public class UnifiedPersonController {
 
             if (person instanceof PersonMorale) {
                 personMoraleService.save((PersonMorale) person);
-                return new ResponseEntity<>(person, HttpStatus.CREATED);
             } else if (person instanceof PersonPhysique) {
                 personnePhysiqueService.save((PersonPhysique) person);
-                return new ResponseEntity<>(person, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>("Type inconnu", HttpStatus.BAD_REQUEST);
             }
 
+            return new ResponseEntity<>(person, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
